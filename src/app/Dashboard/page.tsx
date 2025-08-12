@@ -38,7 +38,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-blue-700">
+        <h1 className="text-2xl font-bold text-blue-400">
           Welcome, {user?.email}
         </h1>
         <p className="mt-2 text-gray-600">
