@@ -1,4 +1,3 @@
-// src/components/Layout/Header.tsx
 "use client";
 
 import Link from "next/link";
@@ -11,50 +10,105 @@ const Header = () => {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <header className="bg-blue-700 text-white shadow-md">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+    <header className="bg-white shadow-md">
+      <div className="container mx-auto flex items-center justify-between px-6 py-4">
         {/* Logo / Institute Name */}
-        <Link href="/" className="flex items-center gap-2">
-          <img src="/Images/logo/logo.png" alt="Institute Logo" className="h-10 w-10" />
-          <span className="text-lg font-bold">ABC Institute</span>
+        <Link href="/" className="flex items-center gap-3">
+          <img
+            src="/Images/logo/logo.png"
+            alt="Institute Logo"
+            className="h-12 "
+          />
+          <span className="text-xl font-bold text-[#222c44]">DIEIT</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-6 items-center">
-          <Link href="/" className="hover:text-yellow-300">Home</Link>
-          <Link href="/about" className="hover:text-yellow-300">About</Link>
-          <Link href="/contact" className="hover:text-yellow-300">Contact</Link>
-          <Link href="/" className="bg-white text-blue-700 px-3 py-1 rounded hover:bg-yellow-300">
+        <nav className="hidden md:flex gap-8 items-center font-medium text-[#57595f]">
+          <Link
+             href="https://jolly-cupcake-c32929.netlify.app/"
+              target="_blank"
+            className="text-lg px-4 py-2 rounded-full bg-[#6556ff] text-white text-center hover:bg-[#4a43d6] transition-colors duration-300"
+          >
+            Home
+          </Link>
+
+
+          <Link
+            href="/"
+            className="px-4 py-2 rounded-full bg-[#6556ff] text-white hover:bg-[#4a43d6] transition-colors duration-300"
+          >
             Sign In
           </Link>
-          <Link href="/AdminLogin" className="bg-yellow-400 text-blue-900 px-3 py-1 rounded hover:bg-yellow-500">
+
+          <Link
+            href="/AdminLogin"
+            className="px-4 py-2 rounded-full bg-[#ede9ff] text-[#6556ff] hover:bg-[#d4ceff] transition-colors duration-300"
+          >
             Admin Login
           </Link>
         </nav>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden p-2 rounded hover:bg-blue-600"
+          className="md:hidden p-2 rounded hover:bg-[#ede9ff]"
           onClick={toggleMenu}
         >
-          {isOpen ? <X /> : <Menu />}
+          {isOpen ? (
+            <X className="text-[#6556ff]" />
+          ) : (
+            <Menu className="text-[#6556ff]" />
+          )}
         </button>
       </div>
 
       {/* Mobile Navigation */}
+      {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-blue-800 px-4 py-3 space-y-3">
-          <Link href="/" className="block hover:text-yellow-300">Home</Link>
-          <Link href="/about" className="block hover:text-yellow-300">About</Link>
-          <Link href="/contact" className="block hover:text-yellow-300">Contact</Link>
-          <Link href="/signin" className="block bg-white text-blue-700 px-3 py-1 rounded hover:bg-yellow-300">
-            Sign In
-          </Link>
-          <Link href="/AdminLogin" className="block bg-yellow-400 text-blue-900 px-3 py-1 rounded hover:bg-yellow-500">
-            Admin Login
-          </Link>
+        <div className="fixed inset-y-0 right-0 w-72 bg-white z-50 flex flex-col shadow-lg p-6">
+          {/* Top bar with logo and close button */}
+          <div className="flex items-center justify-between mb-8">
+            <Link href="/" className="flex items-center gap-3">
+              <img
+                src="/Images/logo/logo.png"
+                alt="Institute Logo"
+                className="h-12 "
+              />
+              <span className="text-xl font-bold text-[#222c44]">DIEIT</span>
+            </Link>
+            <button onClick={toggleMenu} className="p-2 rounded hover:bg-gray-200">
+              <X className="text-[#6556ff]" />
+            </button>
+          </div>
+
+          {/* Menu items */}
+          <nav className="flex flex-col gap-6 font-medium text-[#222c44]">
+            <Link
+              href="https://jolly-cupcake-c32929.netlify.app/"
+              target="_blank"
+              onClick={toggleMenu}
+              className="text-lg px-4 py-2 rounded-full bg-[#6556ff] text-white text-center hover:bg-[#4a43d6] transition-colors duration-300"
+            >
+              Home
+            </Link>
+
+            <Link
+              href="/SignIn"
+              onClick={toggleMenu}
+              className="px-4 py-2 rounded-full bg-[#6556ff] text-white text-center hover:bg-[#4a43d6] transition-colors duration-300"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/AdminLogin"
+              onClick={toggleMenu}
+              className="px-4 py-2 rounded-full bg-[#ede9ff] text-[#6556ff] text-center hover:bg-[#d4ceff] transition-colors duration-300"
+            >
+              Admin Login
+            </Link>
+          </nav>
         </div>
       )}
+
     </header>
   );
 };

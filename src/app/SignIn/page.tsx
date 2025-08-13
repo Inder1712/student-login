@@ -30,7 +30,7 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 text-gray-600">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center text-blue-700 mb-2">
+        <h1 className="text-2xl font-bold text-center text-indigo-500 mb-2">
           Student Login
         </h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -54,14 +54,14 @@ export default function SignInPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-700 text-white py-2 rounded hover:bg-blue-800 disabled:opacity-50"
+            className="w-full bg-indigo-500 text-white py-2 rounded hover:bg-blue-800 disabled:opacity-50"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
         <p className="text-center mt-4 text-sm">
         
-          <Link href="/AdminLogin" className="text-blue-700 hover:underline">
+          <Link href="/AdminLogin" className="text-indigo-500 hover:underline">
             Admin Login
           </Link>
         </p>
