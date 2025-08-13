@@ -29,7 +29,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 text-gray-500" >
       <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Admin Login</h2>
         {error && (

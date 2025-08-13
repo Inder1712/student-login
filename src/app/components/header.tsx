@@ -24,11 +24,11 @@ const Header = () => {
           <Link href="/" className="hover:text-yellow-300">Home</Link>
           <Link href="/about" className="hover:text-yellow-300">About</Link>
           <Link href="/contact" className="hover:text-yellow-300">Contact</Link>
-          <Link href="/signin" className="bg-white text-blue-700 px-3 py-1 rounded hover:bg-yellow-300">
+          <Link href="/" className="bg-white text-blue-700 px-3 py-1 rounded hover:bg-yellow-300">
             Sign In
           </Link>
-          <Link href="/signup" className="bg-yellow-400 text-blue-900 px-3 py-1 rounded hover:bg-yellow-500">
-            Sign Up
+          <Link href="/AdminLogin" className="bg-yellow-400 text-blue-900 px-3 py-1 rounded hover:bg-yellow-500">
+            Admin Login
           </Link>
         </nav>
 
