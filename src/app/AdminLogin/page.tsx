@@ -13,8 +13,8 @@ export default function AdminLogin() {
   const [checkingAuth, setCheckingAuth] = useState(true); // Prevents early redirect flicker
 
   // ✅ Fixed admin credentials
-  const FIXED_ADMIN_ID = "admin123";
-  const FIXED_ADMIN_PASSWORD = "123";
+  const FIXED_ADMIN_ID = process.env.NEXT_PUBLIC_ADMIN_ID;
+  const FIXED_ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
   // ✅ Redirect if already logged in
   useEffect(() => {

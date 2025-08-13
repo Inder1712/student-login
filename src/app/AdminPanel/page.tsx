@@ -53,7 +53,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("isAdminLoggedIn");
-    router.replace("/admin/login");
+    router.replace("/AdminLogin");
   };
 
   if (checkingAuth) {
