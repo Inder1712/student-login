@@ -60,9 +60,9 @@ export default function SignInPage() {
           </button>
         </form>
         <p className="text-center mt-4 text-sm">
-          Don't have an account?{" "}
-          <Link href="/signup" className="text-blue-700 hover:underline">
-            Sign Up
+        
+          <Link href="/AdminLogin" className="text-blue-700 hover:underline">
+            Admin Login
           </Link>
         </p>
       </div>

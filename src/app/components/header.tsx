@@ -15,7 +15,7 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo / Institute Name */}
         <Link href="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="Institute Logo" className="h-10 w-10" />
+          <img src="/Images/logo/logo.png" alt="Institute Logo" className="h-10 w-10" />
           <span className="text-lg font-bold">ABC Institute</span>
         </Link>
 

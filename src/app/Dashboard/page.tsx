@@ -1,59 +1,110 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { onAuthStateChanged, signOut, User } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getDatabase, ref, get, child } from "firebase/database";
+import { getApp } from "firebase/app";
+import { onAuthStateChanged, getAuth, User as FirebaseUser } from "firebase/auth";
 
-export default function DashboardPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+interface StudentData {
+  name: string;
+  grade: string;
+  rollNo: string;
+  email: string;
+}
+
+export default function Dashboard() {
+  const [studentData, setStudentData] = useState<StudentData | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
       } else {
-        router.push("/signin");
+        setUser(null);
       }
       setLoading(false);
     });
+
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
-  const handleSignOut = async () => {
-    await signOut(auth);
-    router.push("/signin");
-  };
+  useEffect(() => {
+    if (!user?.email) return;
 
-  if (loading) {
+    const fetchStudent = async () => {
+      const db = getDatabase(getApp());
+      const dbRef = ref(db);
+
+      try {
+        const snapshot = await get(child(dbRef, "student"));
+        if (snapshot.exists()) {
+          const students = snapshot.val();
+          const currentStudent = Object.values(students).find(
+            (s: any) => s.email === user.email
+          ) as StudentData | undefined;
+
+          if (currentStudent) {
+            setStudentData(currentStudent);
+          } else {
+            console.warn("No student data found for email:", user.email);
+          }
+        } else {
+          console.log("No student data found.");
+        }
+      } catch (error) {
+        console.error("Error fetching student data:", error);
+      }
+    };
+
+    fetchStudent();
+  }, [user?.email]);
+
+  if (loading)
     return (
-      <div className="h-screen flex items-center justify-center text-lg">
-        Loading dashboard...
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-500 text-lg animate-pulse">Checking authentication...</p>
       </div>
     );
-  }
+  if (!user)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500 text-lg font-semibold">User not logged in.</p>
+      </div>
+    );
+  if (!studentData)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-gray-500 text-lg animate-pulse">Loading student data...</p>
+      </div>
+    );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-blue-400">
-          Welcome, {user?.email}
+    <main className="min-h-screen bg-gradient-to-tr from-blue-50 via-white to-blue-100 flex flex-col items-center justify-center px-6 py-12">
+      <div className="max-w-md w-full bg-white shadow-xl rounded-xl p-8 ring-1 ring-blue-300">
+        <h1 className="text-3xl font-extrabold text-blue-700 mb-4 text-center">
+          Welcome <span className="underline decoration-blue-400">{studentData.name}</span>
         </h1>
-        <p className="mt-2 text-gray-600">
-          You are now logged in to your student dashboard.
-        </p>
 
-        <div className="mt-6 flex gap-4">
-          <button
-            onClick={handleSignOut}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Sign Out
-          </button>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center bg-blue-50 rounded-md p-4 shadow-inner">
+            <span className="text-blue-800 font-semibold text-lg">Grade</span>
+            <span className="text-blue-600 text-lg">{studentData.grade}</span>
+          </div>
+
+          <div className="flex justify-between items-center bg-blue-50 rounded-md p-4 shadow-inner">
+            <span className="text-blue-800 font-semibold text-lg">Roll No</span>
+            <span className="text-blue-600 text-lg">{studentData.rollNo}</span>
+          </div>
+
+          <div className="flex justify-between items-center bg-blue-50 rounded-md p-4 shadow-inner break-all">
+            <span className="text-blue-800 font-semibold text-lg">Email</span>
+            <span className="text-blue-600 text-lg">{studentData.email}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
