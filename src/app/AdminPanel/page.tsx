@@ -79,12 +79,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-indigo-500 text-white py-4 px-6 flex justify-between items-center shadow">
         <h1 className="text-2xl font-bold">Admin Panel</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
-        >
-          Logout
-        </button>
+        
       </header>
 
       <main className="p-6 space-y-6">
@@ -135,6 +130,12 @@ export default function AdminDashboard() {
             </div>
           )}
         </section>
+        <div className="text-center"> <button
+          onClick={handleLogout}
+          className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-md"
+        >
+          Logout
+        </button></div>
       </main>
     </div>
   );
