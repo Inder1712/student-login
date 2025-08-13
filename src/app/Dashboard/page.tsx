@@ -10,6 +10,7 @@ interface StudentData {
   grade: string;
   rollNo: string;
   email: string;
+  enrollmentDate:string;
 }
 
 export default function Dashboard() {
@@ -39,7 +40,7 @@ export default function Dashboard() {
       const dbRef = ref(db);
 
       try {
-        const snapshot = await get(child(dbRef, "student"));
+        const snapshot = await get(child(dbRef, "students"));
         if (snapshot.exists()) {
           const students = snapshot.val();
           const currentStudent = Object.values(students).find(
@@ -64,19 +65,19 @@ export default function Dashboard() {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-white">
         <p className="text-gray-500 text-lg animate-pulse">Checking authentication...</p>
       </div>
     );
   if (!user)
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-white">
         <p className="text-red-500 text-lg font-semibold">User not logged in.</p>
       </div>
     );
   if (!studentData)
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-screen bg-white">
         <p className="text-gray-500 text-lg animate-pulse">Loading student data...</p>
       </div>
     );
@@ -90,13 +91,13 @@ export default function Dashboard() {
 
         <div className="space-y-4">
           <div className="flex justify-between items-center bg-blue-50 rounded-md p-4 shadow-inner">
-            <span className="text-blue-800 font-semibold text-lg">Grade</span>
+            <span className="text-blue-800 font-semibold text-lg">Course</span>
             <span className="text-blue-600 text-lg">{studentData.grade}</span>
           </div>
 
           <div className="flex justify-between items-center bg-blue-50 rounded-md p-4 shadow-inner">
-            <span className="text-blue-800 font-semibold text-lg">Roll No</span>
-            <span className="text-blue-600 text-lg">{studentData.rollNo}</span>
+            <span className="text-blue-800 font-semibold text-lg">Enrollment Date </span>
+            <span className="text-blue-600 text-lg">{studentData.enrollmentDate}</span>
           </div>
 
           <div className="flex justify-between items-center bg-blue-50 rounded-md p-4 shadow-inner break-all">
