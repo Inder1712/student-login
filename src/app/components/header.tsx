@@ -50,8 +50,8 @@ const Header = () => {
           <Link href="/signin" className="block bg-white text-blue-700 px-3 py-1 rounded hover:bg-yellow-300">
             Sign In
           </Link>
-          <Link href="/signup" className="block bg-yellow-400 text-blue-900 px-3 py-1 rounded hover:bg-yellow-500">
-            Sign Up
+          <Link href="/AdminLogin" className="block bg-yellow-400 text-blue-900 px-3 py-1 rounded hover:bg-yellow-500">
+            Admin Login
           </Link>
         </div>
       )}
