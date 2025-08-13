@@ -1,43 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase"; // adjust import path as needed
 
 export default function AdminLogin() {
   const router = useRouter();
+
   const [adminId, setAdminId] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true); // Prevents early redirect flicker
 
-  const handleLogin = async (e: React.FormEvent) => {
+  // ✅ Fixed admin credentials
+  const FIXED_ADMIN_ID = "admin123";
+  const FIXED_ADMIN_PASSWORD = "123";
+
+  // ✅ Redirect if already logged in
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
+      if (isAdminLoggedIn === "tfrue") {
+        router.replace("/AdminPanel");
+      } else {
+        setCheckingAuth(false);
+      }
+    }
+  }, [router]);
+
+  // ✅ Handle form submit
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+    setLoading(true);
 
-    // For this example, assume adminId is an email. If your adminId is different, modify accordingly.
-    try {
-      await signInWithEmailAndPassword(auth, adminId, password);
-      router.push("/admin/dashboard"); // Redirect admin to admin dashboard
-    } catch (err: any) {
-      setError(err.message || "Failed to login");
-    } finally {
+    if (adminId === FIXED_ADMIN_ID && password === FIXED_ADMIN_PASSWORD) {
+      localStorage.setItem("isAdminLoggedIn", "true");
+      router.replace("/AdminPanel");
+    } else {
+      setError("Invalid Admin ID or Password");
       setLoading(false);
     }
   };
 
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-600">
+        Checking admin session...
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 text-gray-500" >
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Admin Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 text-gray-800">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center text-blue-700 mb-6">
+          Admin Login
+        </h1>
+
         {error && (
-          <p className="bg-red-100 text-red-700 p-3 rounded mb-4 text-center">{error}</p>
+          <p className="text-red-600 bg-red-100 px-4 py-2 rounded mb-4 text-center">
+            {error}
+          </p>
         )}
+
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label htmlFor="adminId" className="block mb-2 text-sm font-medium text-gray-700">
+            <label htmlFor="adminId" className="block text-sm font-medium mb-1">
               Admin ID
             </label>
             <input
@@ -45,14 +74,14 @@ export default function AdminLogin() {
               type="text"
               value={adminId}
               onChange={(e) => setAdminId(e.target.value)}
+              placeholder="Enter Admin ID"
               required
-              placeholder="Enter your admin ID"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border rounded text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700">
+            <label htmlFor="password" className="block text-sm font-medium mb-1">
               Password
             </label>
             <input
@@ -60,16 +89,16 @@ export default function AdminLogin() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter Password"
               required
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-4 py-2 border rounded text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-700 hover:bg-blue-800 text-white py-2 rounded-md font-semibold transition disabled:opacity-60"
+            className="w-full bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 rounded transition disabled:opacity-50"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
