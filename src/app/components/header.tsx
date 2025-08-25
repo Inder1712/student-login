@@ -33,19 +33,7 @@ const Header = () => {
           </Link>
 
 
-          <Link
-            href="/"
-            className="px-4 py-2 rounded-full bg-[#6556ff] text-white hover:bg-[#4a43d6] transition-colors duration-300"
-          >
-            Sign In
-          </Link>
 
-          <Link
-            href="/AdminLogin"
-            className="px-4 py-2 rounded-full bg-[#ede9ff] text-[#6556ff] hover:bg-[#d4ceff] transition-colors duration-300"
-          >
-            Admin Login
-          </Link>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -91,20 +79,6 @@ const Header = () => {
               Home
             </Link>
 
-            <Link
-              href="/SignIn"
-              onClick={toggleMenu}
-              className="px-4 py-2 rounded-full bg-[#6556ff] text-white text-center hover:bg-[#4a43d6] transition-colors duration-300"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/AdminLogin"
-              onClick={toggleMenu}
-              className="px-4 py-2 rounded-full bg-[#ede9ff] text-[#6556ff] text-center hover:bg-[#d4ceff] transition-colors duration-300"
-            >
-              Admin Login
-            </Link>
           </nav>
         </div>
       )}

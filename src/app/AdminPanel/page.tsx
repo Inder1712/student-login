@@ -1,142 +1,167 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  off
-} from "firebase/database";
-import { getApp } from "firebase/app";
-
-interface Student {
-  name: string;
-  grade: string;      // you can rename to 'course' if needed
-  course: string;
-  feesPending: number;
-}
+import Link from "next/link";
+import Image from "next/image";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function AdminDashboard() {
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const [checkingAuth, setCheckingAuth] = useState(true);
-  const [students, setStudents] = useState<Student[]>([]);
-  const [totalFeesPending, setTotalFeesPending] = useState(0);
 
   useEffect(() => {
-    const loggedIn =
-      typeof window !== "undefined" &&
-      localStorage.getItem("isAdminLoggedIn") === "true";
-    if (!loggedIn) {
-      router.replace("/admin/login");
-    } else {
-      setCheckingAuth(false);
+    const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
+    if (isAdminLoggedIn !== "true") {
+      router.replace("/SignIn"); // redirect to login if not logged in
     }
   }, [router]);
 
-  useEffect(() => {
-    if (!checkingAuth) {
-      const db = getDatabase(getApp());
-      const studentsRef = ref(db, "students");
-
-      onValue(studentsRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          const list: Student[] = Object.values(data).map((s: any) => ({
-            name: s.name,
-            grade: s.grade || s.course || "N/A",
-            course: s.course || s.grade || "N/A",
-            feesPending: parseFloat(s.feesPending) || 0,
-          }));
-          setStudents(list);
-
-          // Calculate total pending fees
-          const total = list.reduce((acc, curr) => acc + curr.feesPending, 0);
-          setTotalFeesPending(total);
-        }
-      });
-
-      return () => {
-        off(studentsRef);
-      };
-    }
-  }, [checkingAuth]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("isAdminLoggedIn");
-    router.replace("/AdminLogin");
-  };
-
-  if (checkingAuth) {
-    return (
-      <div className="h-screen flex justify-center items-center">
-        <p className="text-gray-600 text-lg">Loading Admin Panel...</p>
-      </div>
-    );
-  }
-
   return (
+    <ProtectedRoute>
+
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-indigo-500 text-white py-4 px-6 flex justify-between items-center shadow">
-        <h1 className="text-2xl font-bold">Admin Panel</h1>
-        
+      {/* Fixed Header */}
+      <header className="fixed inset-x-0 top-0 h-16 bg-white text-black z-50 shadow flex items-center justify-between px-6">
+        {/* Left Section: Hamburger + Title */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle sidebar"
+            className="p-2 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            >
+            {isOpen ? (
+              <svg
+                className="w-7 h-7"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                className="w-7 h-7"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            )}
+          </button>
+
+          <h1 className="text-xl font-bold">DIEIT</h1>
+        </div>
+
+        {/* Right Side: Logo */}
+        <Image
+          src="/Images/logo/logo.png"
+          alt="Logo"
+          width={40}
+          height={40}
+          className="object-contain"
+        />
       </header>
 
-      <main className="p-6 space-y-6">
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-white p-4 rounded shadow text-center">
-            <p className="text-sm text-gray-600">Total Students</p>
-            <p className="text-2xl font-semibold text-indigo-500">
-              {students.length}
-            </p>
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 text-black bg-white z-40 transform transition-transform duration-300 ease-in-out
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        <nav className="p-4 space-y-2 overflow-y-auto">
+          <Link href="/students" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
+            Students Details
+          </Link>
+          <Link href="/Notifications" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
+            Notifications
+          </Link>
+          <Link href="/admissions" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
+            Admissions
+          </Link>
+          <Link href="/courses" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
+            Courses
+          </Link>
+          <Link href="/reports" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
+            Reports
+          </Link>
+        </nav>
+      </aside>
+
+      {/* Overlay */}
+      {isOpen && (
+        <button
+          aria-label="Close sidebar overlay"
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-x-0 top-16 bottom-0 bg-black/50 z-30"
+        />
+      )}
+
+      {/* Main Content */}
+      <main className="pt-20 px-6">
+        <h2 className="text-2xl font-bold text-black mb-6">
+          Welcome to the Admin Dashboard
+        </h2>
+
+        {/* Sections Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[minmax(250px,_1fr)]">
+          {/* Notifications */}
+          <div className="bg-white shadow rounded-lg p-6 flex flex-col justify-between min-h-[300px]">
+            <h3 className="text-lg font-semibold mb-4 text-indigo-600">
+              📢 Notifications
+            </h3>
+            <ul className="space-y-2 text-gray-700 flex-grow">
+              <li>New exam schedule released</li>
+              <li>Holiday on Friday</li>
+              <li>Workshop registration is open</li>
+            </ul>
+            <button className="mt-4 text-sm text-indigo-600 hover:underline">
+              View all →
+            </button>
           </div>
 
-          <div className="bg-white p-4 rounded shadow text-center">
-            <p className="text-sm text-gray-600">Total Fees Pending</p>
-            <p className="text-2xl font-semibold text-red-600">
-              ₹ {totalFeesPending.toLocaleString("en-IN")}
-            </p>
+          {/* Admission Enquiries */}
+          <div className="bg-white shadow rounded-lg p-6 flex flex-col justify-between min-h-[300px]">
+            <h3 className="text-lg font-semibold mb-4 text-indigo-600">
+              📝 Admission Enquiries
+            </h3>
+            <ul className="space-y-2 text-gray-700 flex-grow">
+              <li>John Doe - B.Sc Computer Science</li>
+              <li>Mary Smith - MBA</li>
+              <li>Alex Johnson - B.Tech</li>
+            </ul>
+            <button className="mt-4 text-sm text-indigo-600 hover:underline">
+              View all →
+            </button>
           </div>
 
-          <div className="bg-white p-4 rounded shadow text-center">
-            <p className="text-sm text-gray-600">Unique Courses</p>
-            <p className="text-2xl font-semibold text-green-600">
-              {new Set(students.map((s) => s.course)).size}
-            </p>
+          {/* Current Courses */}
+          <div className="bg-white shadow rounded-lg p-6 flex flex-col justify-between min-h-[300px]">
+            <h3 className="text-lg font-semibold mb-4 text-indigo-600">
+              🎓 Current Courses
+            </h3>
+            <ul className="space-y-2 text-gray-700 flex-grow">
+              <li>Web Development Bootcamp</li>
+              <li>Data Science with Python</li>
+              <li>Digital Marketing</li>
+            </ul>
+            <button className="mt-4 text-sm text-indigo-600 hover:underline">
+              View all →
+            </button>
           </div>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold text-gray-800 mt-8 mb-4">
-            Students Overview
-          </h2>
-
-          {students.length === 0 ? (
-            <p className="text-gray-600">No students found.</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {students.map((stu, idx) => (
-                <div
-                  key={`${stu.name}-${idx}`}
-                  className="bg-white rounded-md shadow p-4"
-                >
-                  <p className="text-lg font-medium text-gray-900">{stu.name}</p>
-                  <p className="text-gray-700">Course: {stu.course}</p>
-                  <p className="text-gray-700">
-                    Fees Pending: ₹ {stu.feesPending.toLocaleString("en-IN")}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-        <div className="text-center"> <button
-          onClick={handleLogout}
-          className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-md"
-        >
-          Logout
-        </button></div>
+        </div>
       </main>
     </div>
+          </ProtectedRoute>
   );
 }

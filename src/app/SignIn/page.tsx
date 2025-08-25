@@ -1,70 +1,89 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
-export default function SignInPage() {
+export default function AdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(true);
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  // If already signed in, go straight to AdminPanel
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) router.replace("/AdminPanel");
+      setChecking(false);
+    });
+    return () => unsub();
+  }, [router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
-
+    setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/Dashboard"); // Redirect after login
+      router.replace("/AdminPanel");
     } catch (err: any) {
-      setError(err.message);
-    } finally {
+      const code = err?.code as string | undefined;
+      if (code === "auth/invalid-credential" || code === "auth/wrong-password") {
+        setError("Invalid email or password.");
+      } else if (code === "auth/user-not-found") {
+        setError("No user found with this email.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
       setLoading(false);
     }
   };
 
+  if (checking) return <div className="min-h-screen flex items-center justify-center">Checking session…</div>;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 text-gray-600">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center text-indigo-500 mb-2">
-          Student Login
-        </h1>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <form onSubmit={handleSignIn} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-            required
-          />
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 text-gray-800">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center text-indigo-500 mb-6">Admin Login</h1>
+
+        {error && <p className="text-red-600 bg-red-100 px-4 py-2 rounded mb-4 text-center">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="admin@yourapp.com"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="••••••••"
+            />
+          </div>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-500 text-white py-2 rounded hover:bg-blue-800 disabled:opacity-50"
+            className="w-full bg-indigo-500 hover:bg-blue-800 text-white font-medium py-2 rounded transition disabled:opacity-50"
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-        <p className="text-center mt-4 text-sm">
-        
-          <Link href="/AdminLogin" className="text-indigo-500 hover:underline">
-            Admin Login
-          </Link>
-        </p>
       </div>
     </div>
   );
