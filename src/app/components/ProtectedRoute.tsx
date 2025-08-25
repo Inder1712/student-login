@@ -12,19 +12,19 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setAuthorized(true);
+      if (!user) {
+        router.replace("/"); // go to login
       } else {
-        setAuthorized(false);
-        router.replace("/"); // redirect to login
+        setAuthorized(true);
       }
-      setChecking(false); // ✅ always resolve checking
+      setChecking(false); // ✅ only after Firebase answers
     });
 
     return () => unsub();
   }, [router]);
 
   if (checking) {
+    // 🚫 Don't show admin UI at all
     return (
       <div className="flex justify-center items-center min-h-screen text-gray-600">
         Checking session…
