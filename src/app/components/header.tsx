@@ -25,7 +25,7 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-8 items-center font-medium text-[#57595f]">
           <Link
-             href="https://jolly-cupcake-c32929.netlify.app/"
+             href="https://dieit.in/"
               target="_blank"
             className="text-lg px-4 py-2 rounded-full bg-[#6556ff] text-white text-center hover:bg-[#4a43d6] transition-colors duration-300"
           >
@@ -71,7 +71,7 @@ const Header = () => {
           {/* Menu items */}
           <nav className="flex flex-col gap-6 font-medium text-[#222c44]">
             <Link
-              href="https://jolly-cupcake-c32929.netlify.app/"
+              href="https://dieit.in/"
               target="_blank"
               onClick={toggleMenu}
               className="text-lg px-4 py-2 rounded-full bg-[#6556ff] text-white text-center hover:bg-[#4a43d6] transition-colors duration-300"
