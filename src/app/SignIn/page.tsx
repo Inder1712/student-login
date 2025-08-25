@@ -14,13 +14,13 @@ export default function AdminLoginPage() {
   const [checking, setChecking] = useState(true);
 
   // If already signed in, go straight to AdminPanel
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) router.replace("/AdminPanel");
-      setChecking(false);
-    });
-    return () => unsub();
-  }, [router]);
+  // useEffect(() => {
+  //   const unsub = onAuthStateChanged(auth, (user) => {
+  //     if (user) router.replace("/AdminPanel");
+  //     setChecking(false);
+  //   });
+  //   return () => unsub();
+  // }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
