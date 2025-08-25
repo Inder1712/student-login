@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter,usePathname } from "next/navigation";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
@@ -12,15 +12,19 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
+    const pathname = usePathname();
 
   // If already signed in, go straight to AdminPanel
-  // useEffect(() => {
-  //   const unsub = onAuthStateChanged(auth, (user) => {
-  //     if (user) router.replace("/AdminPanel");
-  //     setChecking(false);
-  //   });
-  //   return () => unsub();
-  // }, [router]);
+ useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      // ✅ Only redirect to /AdminPanel if already logged in *and* currently on login page
+      if (user && pathname === "/AdminLogin") {
+        router.replace("/AdminPanel");
+      }
+      setChecking(false);
+    });
+    return () => unsub();
+  }, [router, pathname]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
