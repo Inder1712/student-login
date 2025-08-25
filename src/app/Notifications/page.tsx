@@ -16,6 +16,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import ProtectedRoute from "../components/ProtectedRoute";
+import AdminLayout from "../components/AdminLayout";
 
 type Notification = {
   id?: string;
@@ -113,6 +114,7 @@ export default function NotificationsPage() {
 
   return (
     <ProtectedRoute>
+      <AdminLayout>
 
     <div className="min-h-screen bg-gray-50 p-8 text-gray-800">
       <h1 className="text-3xl font-bold text-indigo-700 mb-6">📢 Notifications</h1>
@@ -158,7 +160,7 @@ export default function NotificationsPage() {
               !newNotification.description.trim()
             }
             className="bg-indigo-600 disabled:opacity-50 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
-          >
+            >
             Add
           </button>
         </div>
@@ -198,7 +200,7 @@ export default function NotificationsPage() {
                       className="border rounded px-3 py-1"
                       placeholder="Description"
                       rows={2}
-                    />
+                      />
                     <input
                       type="url"
                       value={editData.link}
@@ -207,18 +209,18 @@ export default function NotificationsPage() {
                       }
                       className="border rounded px-3 py-1"
                       placeholder="Link"
-                    />
+                      />
                     <div className="flex gap-2 mt-2">
                       <button
                         onClick={saveEdit}
                         className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
-                      >
+                        >
                         Save
                       </button>
                       <button
                         onClick={() => setEditIndex(null)}
                         className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
-                      >
+                        >
                         Cancel
                       </button>
                     </div>
@@ -231,10 +233,10 @@ export default function NotificationsPage() {
                     <p className="text-gray-700">{note.description}</p>
                     {note.link && (
                       <a
-                        href={note.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-red-600 underline break-all"
+                      href={note.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-red-600 underline break-all"
                       >
                         {note.link}
                       </a>
@@ -243,13 +245,13 @@ export default function NotificationsPage() {
                       <button
                         onClick={() => startEditing(index)}
                         className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                      >
+                        >
                         Edit
                       </button>
                       <button
                         onClick={() => deleteNotification(note.id)}
                         className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                      >
+                        >
                         Delete
                       </button>
                     </div>
@@ -261,6 +263,7 @@ export default function NotificationsPage() {
         )}
       </div>
     </div>
+        </AdminLayout>
                       </ProtectedRoute>
   );
 }
