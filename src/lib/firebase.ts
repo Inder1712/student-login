@@ -1,7 +1,11 @@
 "use client";
 
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, setPersistence, browserSessionPersistence /* or inMemoryPersistence */ } from "firebase/auth";
+import {
+  getAuth,
+  setPersistence,
+  browserSessionPersistence, // or browserLocalPersistence
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -17,9 +21,11 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = getAuth(app);
+
+// ✅ Ensure persistence is set before use
+setPersistence(auth, browserSessionPersistence).catch((e) =>
+  console.error("Failed to set persistence:", e)
+);
+
 export const db = getFirestore(app);
 export const storage = getStorage(app);
-
-// Pick ONE persistence:
-setPersistence(auth, browserSessionPersistence)  // keeps session until browser close
-  .catch((e) => console.error("Failed to set persistence:", e));
