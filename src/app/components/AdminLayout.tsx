@@ -66,8 +66,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <nav className="p-4 space-y-2 overflow-y-auto">
-          <Link href="/students" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
-            Students Details
+          <Link   href="https://dieit.in/"
+              target="_blank" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
+            Main Website
           </Link>
           <Link href="/Notifications" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
             Notifications
