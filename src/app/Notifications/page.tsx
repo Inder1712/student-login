@@ -44,12 +44,9 @@ export default function NotificationsPage() {
   });
 
   // ✅ Protect route (only allow if logged in)
-  useEffect(() => {
-    const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
-    if (isAdminLoggedIn !== "true") {
-      router.replace("/SignIn"); // kick out if not logged in
-    }
-  }, [router]);
+
+
+  
 
   // ✅ Real-time listener with ordering
   useEffect(() => {
