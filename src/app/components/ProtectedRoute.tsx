@@ -11,19 +11,19 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        router.replace("/");
-        return;
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAuthorized(true);
+      } else {
+        setAuthorized(false);
+        router.replace("/"); // redirect to login
       }
-      setAuthorized(true);
-      setChecking(false);
+      setChecking(false); // ✅ always resolve checking
     });
 
     return () => unsub();
   }, [router]);
 
-  // 🚫 Don’t render children until auth is confirmed
   if (checking) {
     return (
       <div className="flex justify-center items-center min-h-screen text-gray-600">
@@ -32,6 +32,5 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
     );
   }
 
-  // ✅ Only render if authorized
   return authorized ? <>{children}</> : null;
 }
