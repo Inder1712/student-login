@@ -4,7 +4,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   getAuth,
   setPersistence,
-  browserSessionPersistence, // or browserLocalPersistence
+  browserLocalPersistence, // ✅ use localStorage persistence
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -22,8 +22,8 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = getAuth(app);
 
-// ✅ Ensure persistence is set before use
-setPersistence(auth, browserSessionPersistence).catch((e) =>
+// ✅ Persist login across reloads & tabs
+setPersistence(auth, browserLocalPersistence).catch((e) =>
   console.error("Failed to set persistence:", e)
 );
 

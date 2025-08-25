@@ -1,37 +1,41 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter,usePathname } from "next/navigation";
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { useRouter, usePathname } from "next/navigation";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const pathname = usePathname();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
-    const pathname = usePathname();
 
-  // If already signed in, go straight to AdminPanel
- useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      // ✅ Only redirect to /AdminPanel if already logged in *and* currently on login page
-      if (user && pathname === "/AdminLogin") {
-        router.replace("/AdminPanel");
-      }
-      setChecking(false);
-    });
-    return () => unsub();
+  // ✅ Check localStorage session on mount
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("adminUser") === "true";
+
+    if (isLoggedIn && pathname === "/AdminLogin") {
+      router.replace("/AdminPanel");
+    }
+    setChecking(false);
   }, [router, pathname]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
+
+      // ✅ Save flag instead of full Firebase user
+      localStorage.setItem("adminUser", "true");
+
       router.replace("/AdminPanel");
     } catch (err: any) {
       const code = err?.code as string | undefined;
@@ -46,14 +50,26 @@ export default function AdminLoginPage() {
     }
   };
 
-  if (checking) return <div className="min-h-screen flex items-center justify-center">Checking session…</div>;
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Checking session…
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 text-gray-800">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center text-indigo-500 mb-6">Admin Login</h1>
+        <h1 className="text-3xl font-bold text-center text-indigo-500 mb-6">
+          Admin Login
+        </h1>
 
-        {error && <p className="text-red-600 bg-red-100 px-4 py-2 rounded mb-4 text-center">{error}</p>}
+        {error && (
+          <p className="text-red-600 bg-red-100 px-4 py-2 rounded mb-4 text-center">
+            {error}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>

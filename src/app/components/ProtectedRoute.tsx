@@ -1,36 +1,32 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged, User } from "firebase/auth";
 
-export default function ProtectedRoute({ children }: { children: ReactNode }) {
+export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [user, setUser] = useState<User | null | undefined>(undefined);
+  const [checking, setChecking] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
-      // Firebase has finished checking
-      setUser(firebaseUser ?? null);
-    });
-    return () => unsub();
-  }, []);
+    const isLoggedIn = localStorage.getItem("adminUser") === "true";
 
-  if (user === undefined) {
-    // Still loading, don’t redirect yet
+    if (isLoggedIn) {
+      setAuthorized(true);
+    } else {
+      router.replace("/AdminLogin");
+    }
+
+    setChecking(false);
+  }, [router]);
+
+  if (checking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Checking authentication...
+        Loading…
       </div>
     );
   }
 
-  if (user === null) {
-    // Redirect AFTER Firebase has confirmed no user
-    router.replace("/SignIn");
-    return null;
-  }
-
-  return <>{children}</>;
+  return authorized ? <>{children}</> : null;
 }
