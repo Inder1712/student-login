@@ -3,29 +3,35 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const [checking, setChecking] = useState(true);
-  const [authorized, setAuthorized] = useState(false);
+  const [user, setUser] = useState<User | null | undefined>(undefined); 
+  // undefined = loading, null = no user, User = logged in
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.replace("/SignIn");
-      } else {
-        setAuthorized(true);
-      }
-      setChecking(false);
+    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser ?? null);
     });
-
     return () => unsub();
-  }, [router]);
+  }, []);
 
-  if (checking) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  // Still checking session
+  if (user === undefined) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Checking authentication...
+      </div>
+    );
   }
 
-  return authorized ? <>{children}</> : null;
+  // Not logged in
+  if (user === null) {
+    router.replace("/SignIn");
+    return null;
+  }
+
+  // Logged in ✅
+  return <>{children}</>;
 }
