@@ -7,8 +7,8 @@ import { onAuthStateChanged, User } from "firebase/auth";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const [user, setUser] = useState<User | null | undefined>(undefined); 
-  // undefined = loading, null = no user, User = logged in
+  const [user, setUser] = useState<User | null | undefined>(undefined);
+  // undefined = still checking, null = no user, User = logged in
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (firebaseUser) => {
@@ -17,8 +17,8 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
     return () => unsub();
   }, []);
 
-  // Still checking session
   if (user === undefined) {
+    // ✅ Don’t redirect yet, just show loading until Firebase finishes
     return (
       <div className="min-h-screen flex items-center justify-center">
         Checking authentication...
@@ -26,12 +26,12 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
     );
   }
 
-  // Not logged in
   if (user === null) {
+    // ✅ Only redirect once we *know* there is no user
     router.replace("/SignIn");
     return null;
   }
 
-  // Logged in ✅
+  // ✅ Logged in
   return <>{children}</>;
 }
