@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import {
@@ -44,9 +44,17 @@ export default function NotificationsPage() {
   });
 
   // ✅ Protect route (only allow if logged in)
+const pathname=usePathname()
+  const [checking, setChecking] = useState(true);
 
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("adminUser") === "true";
 
-  
+    if (isLoggedIn && pathname === "/AdminPanel") {
+      router.replace("/Notifications");
+    }
+    setChecking(false);
+  }, [router, pathname]);
 
   // ✅ Real-time listener with ordering
   useEffect(() => {
