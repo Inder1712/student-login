@@ -5,25 +5,33 @@ import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-type Props = { children: ReactNode };
-
-export default function ProtectedRoute({ children }: Props) {
+export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        router.replace("/"); // unify route names
+        router.replace("/");
+        return;
       }
+      setAuthorized(true);
       setChecking(false);
     });
+
     return () => unsub();
   }, [router]);
 
+  // 🚫 Don’t render children until auth is confirmed
   if (checking) {
-    return <div className="min-h-screen flex items-center justify-center">Checking…</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen text-gray-600">
+        Checking session…
+      </div>
+    );
   }
 
-  return <>{children}</>;
+  // ✅ Only render if authorized
+  return authorized ? <>{children}</> : null;
 }
