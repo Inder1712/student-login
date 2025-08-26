@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import SignInPage from "../SignIn/page";
+import SignInPage from "../AdminLogin/page";
  // Adjust path if needed
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {

@@ -118,7 +118,7 @@ const pathname=usePathname()
   };
 
   return (
-    <ProtectedRoute>
+    
       <AdminLayout>
 
     <div className="min-h-screen bg-gray-50 p-8 text-gray-800">
@@ -269,6 +269,6 @@ const pathname=usePathname()
       </div>
     </div>
         </AdminLayout>
-                      </ProtectedRoute>
+                      
   );
 }

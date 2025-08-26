@@ -1,24 +1,21 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("authToken")?.value;
-  const { pathname } = req.nextUrl;
+  const isLoggedIn = req.cookies.get("adminUser")?.value === "true";
 
-  // Allow login route and static files
-  if (pathname.startsWith("/SignIn") || pathname.startsWith("/_next") || pathname === "/favicon.ico") {
-    return NextResponse.next();
-  }
-
-  // If no token, block access to everything else
-  if (!token) {
-    return NextResponse.redirect(new URL("/SignIn", req.url));
+  // Protect all routes under /admin
+  if (req.nextUrl.pathname.startsWith("/admin")) {
+    if (!isLoggedIn) {
+      // redirect to root ("/") if not logged in
+      return NextResponse.redirect(new URL("/", req.url));
+    }
   }
 
   return NextResponse.next();
 }
 
+// Run middleware only on /admin routes
 export const config = {
-  matcher: ["/((?!_next|favicon.ico).*)"], // apply to all routes
+  matcher: ["/admin/:path*"],
 };

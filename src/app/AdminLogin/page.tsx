@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -13,9 +14,9 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  // ✅ Check localStorage session on mount
+  // ✅ If already logged in, go to dashboard
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("adminUser") === "true";
+    const isLoggedIn = Cookies.get("adminUser") === "true";
 
     if (isLoggedIn && pathname === "/AdminLogin") {
       router.replace("/AdminPanel");
@@ -28,20 +29,14 @@ export default function AdminLoginPage() {
     setError("");
     setLoading(true);
 
-    try {
-      // ✅ Compare with env values
-      if (
-        email === process.env.NEXT_PUBLIC_ADMIN_ID &&
-        password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
-      ) {
-        localStorage.setItem("adminUser", "true");
-        router.replace("/AdminPanel");
-      } else {
-        setError("Invalid email or password.");
-        setLoading(false);
-      }
-    } catch {
-      setError("Login failed. Please try again.");
+    if (
+      email === process.env.NEXT_PUBLIC_ADMIN_ID &&
+      password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+    ) {
+      Cookies.set("adminUser", "true", { expires: 1 });
+      router.replace("/AdminPanel");
+    } else {
+      setError("Invalid email or password.");
       setLoading(false);
     }
   };
