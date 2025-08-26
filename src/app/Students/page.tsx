@@ -40,10 +40,10 @@ export default function AdmissionsListPage() {
       try {
         const querySnapshot = await getDocs(collection(db, "Admissions"));
         const data = querySnapshot.docs.map((doc) => {
-          const docData = doc.data() as Admission;
+          const docData = doc.data() as Omit<Admission, "id">;
           return {
-            id: doc.id,
             ...docData,
+            id: doc.id, // always assign last so it doesn't get overwritten
             createdAt: docData.createdAt,
           };
         }) as Admission[];
