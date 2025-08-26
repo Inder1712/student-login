@@ -65,7 +65,7 @@ export default function AdminDashboard() {
           <Link href="/Notifications" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
             Notifications
           </Link>
-          <Link href="/admissions" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
+          <Link href="/Students" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
             Admissions
           </Link>
           <Link href="/courses" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">

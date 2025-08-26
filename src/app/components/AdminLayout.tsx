@@ -71,8 +71,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/Notifications" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
             Notifications
           </Link>
-          <Link href="/admissions" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
-            Admissions
+          <Link href="/Students" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
+            Students
           </Link>
           <Link href="/courses" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
             Courses
