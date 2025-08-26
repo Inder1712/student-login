@@ -6,27 +6,23 @@ import { useRouter } from "next/navigation";
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
-  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("adminUser") === "true";
-
-    if (isLoggedIn) {
-      setAuthorized(true);
-    } else {
+    if (!isLoggedIn) {
       router.replace("/AdminLogin");
+    } else {
+      setChecking(false);
     }
-
-    setChecking(false);
   }, [router]);
 
   if (checking) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Loading…
+        Checking authentication…
       </div>
     );
   }
 
-  return authorized ? <>{children}</> : null;
+  return <>{children}</>;
 }

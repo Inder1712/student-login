@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -31,21 +29,19 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-
-      // ✅ Save flag instead of full Firebase user
-      localStorage.setItem("adminUser", "true");
-
-      router.replace("/AdminPanel");
-    } catch (err: any) {
-      const code = err?.code as string | undefined;
-      if (code === "auth/invalid-credential" || code === "auth/wrong-password") {
-        setError("Invalid email or password.");
-      } else if (code === "auth/user-not-found") {
-        setError("No user found with this email.");
+      // ✅ Compare with env values
+      if (
+        email === process.env.NEXT_PUBLIC_ADMIN_ID &&
+        password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+      ) {
+        localStorage.setItem("adminUser", "true");
+        router.replace("/AdminPanel");
       } else {
-        setError("Login failed. Please try again.");
+        setError("Invalid email or password.");
+        setLoading(false);
       }
+    } catch {
+      setError("Login failed. Please try again.");
       setLoading(false);
     }
   };
