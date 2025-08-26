@@ -6,15 +6,26 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
-    if (isAdminLoggedIn !== "true") {
-      router.replace("/SignIn"); 
+    const ok = typeof window !== "undefined" && localStorage.getItem("isLoggedIn") === "true";
+    if (!ok) {
+      router.replace("/");
+    } else {
+      setChecking(false);
     }
   }, [router]);
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-lg font-semibold">
+        Checking access…
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -27,24 +38,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="p-2 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300"
           >
             {isOpen ? (
-              <svg
-                className="w-7 h-7"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg
-                className="w-7 h-7"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             )}
           </button>
@@ -66,8 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <nav className="p-4 space-y-2 overflow-y-auto">
-          <Link   href="https://dieit.in/"
-              target="_blank" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
+          <Link href="https://dieit.in/" target="_blank" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
             Main Website
           </Link>
           <Link href="/Notifications" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
@@ -82,6 +80,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/reports" className="block px-3 py-2 rounded hover:bg-indigo-500 hover:text-white transition">
             Reports
           </Link>
+          <button
+            onClick={() => {
+              localStorage.setItem("isLoggedIn", "false");
+              router.replace("/SignIn");
+            }}
+            className="w-full text-left px-3 py-2 rounded bg-red-500 text-white hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
         </nav>
       </aside>
 
@@ -94,7 +101,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         />
       )}
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="pt-20 px-6">{children}</main>
     </div>
   );

@@ -1,53 +1,44 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const pathname = usePathname();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [checking, setChecking] = useState(true);
 
-  // ✅ If already logged in, go to dashboard
+  // Optional: reset flag when SignIn mounts
   useEffect(() => {
-    const isLoggedIn = Cookies.get("adminUser") === "true";
-
-    if (isLoggedIn && pathname === "/AdminLogin") {
-      router.replace("/AdminPanel");
-    }
-    setChecking(false);
-  }, [router, pathname]);
+    localStorage.setItem("isLoggedIn", "false");
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    if (
-      email === process.env.NEXT_PUBLIC_ADMIN_ID &&
-      password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
-    ) {
-      Cookies.set("adminUser", "true", { expires: 1 });
-      router.replace("/AdminPanel");
-    } else {
-      setError("Invalid email or password.");
+    try {
+      if (
+        email === process.env.NEXT_PUBLIC_ADMIN_ID &&
+        password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+      ) {
+        localStorage.setItem("isLoggedIn", "true");
+        router.replace("/AdminPanel"); // go to your first admin page
+      } else {
+        localStorage.setItem("isLoggedIn", "false");
+        setError("Invalid email or password.");
+        setLoading(false);
+      }
+    } catch {
+      localStorage.setItem("isLoggedIn", "false");
+      setError("Login failed. Please try again.");
       setLoading(false);
     }
   };
-
-  if (checking) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Checking session…
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 text-gray-800">

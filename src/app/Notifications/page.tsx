@@ -15,7 +15,7 @@ import {
   serverTimestamp,
   Timestamp,
 } from "firebase/firestore";
-import ProtectedRoute from "../components/ProtectedRoute";
+
 import AdminLayout from "../components/AdminLayout";
 
 type Notification = {
