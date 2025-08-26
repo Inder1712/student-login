@@ -17,23 +17,38 @@ const Header = () => {
           <img
             src="/Images/logo/logo.png"
             alt="Institute Logo"
-            className="h-12 "
+            className="h-12"
           />
           <span className="text-xl font-bold text-[#222c44]">DIEIT</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-8 items-center font-medium text-[#57595f]">
+        <nav className="hidden md:flex gap-6 items-center font-medium text-[#57595f]">
           <Link
-             href="https://dieit.in/"
-              target="_blank"
+            href="https://dieit.in/"
+            target="_blank"
             className="text-lg px-4 py-2 rounded-full bg-[#6556ff] text-white text-center hover:bg-[#4a43d6] transition-colors duration-300"
           >
-            Home
+            Main Website
           </Link>
-
-
-
+          <Link
+            href="/Students"
+            className="text-lg px-4 py-2 rounded-full bg-[#f0f0f0] text-[#222c44] text-center hover:bg-[#e0e0e0] transition-colors duration-300"
+          >
+            Students
+          </Link>
+          <Link
+            href="/Notifications"
+            className="text-lg px-4 py-2 rounded-full bg-[#f0f0f0] text-[#222c44] text-center hover:bg-[#e0e0e0] transition-colors duration-300"
+          >
+            Notifications
+          </Link>
+          <Link
+            href="/"
+            className="text-lg px-4 py-2 rounded-full bg-red-500 text-white text-center hover:bg-red-600 transition-colors duration-300"
+          >
+            Logout
+          </Link>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -50,7 +65,6 @@ const Header = () => {
       </div>
 
       {/* Mobile Navigation */}
-      {/* Mobile Navigation */}
       {isOpen && (
         <div className="fixed inset-y-0 right-0 w-72 bg-white z-50 flex flex-col shadow-lg p-6">
           {/* Top bar with logo and close button */}
@@ -59,7 +73,7 @@ const Header = () => {
               <img
                 src="/Images/logo/logo.png"
                 alt="Institute Logo"
-                className="h-12 "
+                className="h-12"
               />
               <span className="text-xl font-bold text-[#222c44]">DIEIT</span>
             </Link>
@@ -68,21 +82,40 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Menu items */}
-          <nav className="flex flex-col gap-6 font-medium text-[#222c44]">
+          {/* Mobile Menu Items */}
+          <nav className="flex flex-col gap-4 font-medium text-[#222c44]">
             <Link
               href="https://dieit.in/"
               target="_blank"
               onClick={toggleMenu}
               className="text-lg px-4 py-2 rounded-full bg-[#6556ff] text-white text-center hover:bg-[#4a43d6] transition-colors duration-300"
             >
-              Home
+              Main Website
             </Link>
-
+            <Link
+              href="/Students"
+              onClick={toggleMenu}
+              className="text-lg px-4 py-2 rounded-full bg-[#f0f0f0] text-[#222c44] text-center hover:bg-[#e0e0e0] transition-colors duration-300"
+            >
+              Students
+            </Link>
+            <Link
+              href="/Notifications"
+              onClick={toggleMenu}
+              className="text-lg px-4 py-2 rounded-full bg-[#f0f0f0] text-[#222c44] text-center hover:bg-[#e0e0e0] transition-colors duration-300"
+            >
+              Notifications
+            </Link>
+            <Link
+              href="/"
+              onClick={toggleMenu}
+              className="text-lg px-4 py-2 rounded-full bg-red-500 text-white text-center hover:bg-red-600 transition-colors duration-300"
+            >
+              Logout
+            </Link>
           </nav>
         </div>
       )}
-
     </header>
   );
 };

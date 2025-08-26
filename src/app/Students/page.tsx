@@ -27,13 +27,15 @@ export default function AdmissionsListPage() {
   const [checking, setChecking] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
+   useEffect(() => {
     const isLoggedIn = localStorage.getItem("adminUser") === "true";
-    if (!isLoggedIn) {
-      router.replace("/AdminLogin");
+
+    if (isLoggedIn && pathname === "/AdminPanel") {
+      router.replace("/Students");
     }
     setChecking(false);
   }, [router, pathname]);
+
 
   useEffect(() => {
     const fetchAdmissions = async () => {
