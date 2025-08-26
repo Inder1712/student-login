@@ -32,9 +32,9 @@ export default function AdminDashboard() {
               <li>Holiday on Friday</li>
               <li>Workshop registration is open</li>
             </ul>
-            <button className="mt-4 text-sm text-indigo-600 hover:underline">
+            <Link href="/Notifications" className="mt-4 text-sm text-indigo-600 hover:underline">
               View all →
-            </button>
+            </Link>
           </div>
 
           {/* Admission Enquiries */}
@@ -45,9 +45,9 @@ export default function AdminDashboard() {
               <li>Mary Smith - MBA</li>
               <li>Alex Johnson - B.Tech</li>
             </ul>
-            <button className="mt-4 text-sm text-indigo-600 hover:underline">
+            <Link href="/Students" className="mt-4 text-sm text-indigo-600 hover:underline">
               View all →
-            </button>
+            </Link>
           </div>
 
           {/* Current Courses */}
