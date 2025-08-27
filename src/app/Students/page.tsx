@@ -1,7 +1,7 @@
 // src/app/admissions-list/page.tsx
 "use client";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { collection, getDocs, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import AdminLayout from "../components/AdminLayout";
@@ -18,7 +18,7 @@ interface Admission {
   address?: string;
   phone?: string;
   qualification?: string;
-  image?: string; // ✅ added image field
+  image?: string;
 }
 
 export default function AdmissionsListPage() {
@@ -26,6 +26,7 @@ export default function AdmissionsListPage() {
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
   const [checking, setChecking] = useState(true);
+  const [selectedCourse, setSelectedCourse] = useState<string>("All"); // ✅ course filter
   const router = useRouter();
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function AdmissionsListPage() {
           const docData = doc.data() as Omit<Admission, "id">;
           return {
             ...docData,
-            id: doc.id, // ensure id is last
+            id: doc.id,
             createdAt: docData.createdAt,
           };
         }) as Admission[];
@@ -60,6 +61,18 @@ export default function AdmissionsListPage() {
     fetchAdmissions();
   }, []);
 
+  // ✅ Get unique course list
+  const courses = useMemo(() => {
+    const allCourses = admissions.map((a) => a.course).filter(Boolean);
+    return ["All", ...Array.from(new Set(allCourses))];
+  }, [admissions]);
+
+  // ✅ Apply course filter
+  const filteredAdmissions = useMemo(() => {
+    if (selectedCourse === "All") return admissions;
+    return admissions.filter((a) => a.course === selectedCourse);
+  }, [admissions, selectedCourse]);
+
   if (checking) return null;
 
   return (
@@ -73,15 +86,33 @@ export default function AdmissionsListPage() {
           </p>
         </section>
 
+        {/* Filter Section */}
+        <section className="max-w-5xl mx-auto px-6 mt-8 text-gray-700">
+          <div className="flex items-center gap-4">
+            <label className="font-semibold text-gray-700">Filter by Course:</label>
+            <select
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              className="border border-gray-300 rounded-lg p-2"
+            >
+              {courses.map((course) => (
+                <option key={course} value={course}>
+                  {course}
+                </option>
+              ))}
+            </select>
+          </div>
+        </section>
+
         {/* Cards Section */}
         <section className="max-w-5xl mx-auto py-12 px-6">
           {loading ? (
             <p className="text-center text-gray-600">Loading applications...</p>
-          ) : admissions.length === 0 ? (
+          ) : filteredAdmissions.length === 0 ? (
             <p className="text-center text-gray-600">No applications found.</p>
           ) : (
             <div className="space-y-5">
-              {admissions.map((admission) => {
+              {filteredAdmissions.map((admission) => {
                 const appliedDate = admission.createdAt
                   ? admission.createdAt.toDate().toLocaleDateString("en-GB", {
                       day: "2-digit",
@@ -95,7 +126,7 @@ export default function AdmissionsListPage() {
                     key={admission.id}
                     className="bg-white rounded-xl shadow-md border border-gray-200 p-6 flex flex-col sm:flex-row gap-6"
                   >
-                    {/* ✅ Student Image */}
+                    {/* Student Image */}
                     {admission.image ? (
                       <img
                         src={admission.image}
