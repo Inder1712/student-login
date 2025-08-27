@@ -18,6 +18,7 @@ interface Admission {
   address?: string;
   phone?: string;
   qualification?: string;
+  image?: string; // ✅ added image field
 }
 
 export default function AdmissionsListPage() {
@@ -27,7 +28,7 @@ export default function AdmissionsListPage() {
   const [checking, setChecking] = useState(true);
   const router = useRouter();
 
-   useEffect(() => {
+  useEffect(() => {
     const isLoggedIn = localStorage.getItem("adminUser") === "true";
 
     if (isLoggedIn && pathname === "/AdminPanel") {
@@ -35,7 +36,6 @@ export default function AdmissionsListPage() {
     }
     setChecking(false);
   }, [router, pathname]);
-
 
   useEffect(() => {
     const fetchAdmissions = async () => {
@@ -45,7 +45,7 @@ export default function AdmissionsListPage() {
           const docData = doc.data() as Omit<Admission, "id">;
           return {
             ...docData,
-            id: doc.id, // always assign last so it doesn't get overwritten
+            id: doc.id, // ensure id is last
             createdAt: docData.createdAt,
           };
         }) as Admission[];
@@ -93,50 +93,66 @@ export default function AdmissionsListPage() {
                 return (
                   <div
                     key={admission.id}
-                    className="bg-white rounded-xl shadow-md border border-gray-200 p-6"
+                    className="bg-white rounded-xl shadow-md border border-gray-200 p-6 flex flex-col sm:flex-row gap-6"
                   >
-                    <h3 className="text-lg font-bold text-gray-800 mb-2">
-                      {admission.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 mb-4">
-                      Applied on: {appliedDate}
-                    </p>
+                    {/* ✅ Student Image */}
+                    {admission.image ? (
+                      <img
+                        src={admission.image}
+                        alt={admission.name}
+                        className="w-32 h-32 object-cover rounded-lg border"
+                      />
+                    ) : (
+                      <div className="w-32 h-32 flex items-center justify-center bg-gray-100 text-gray-400 border rounded-lg">
+                        No Image
+                      </div>
+                    )}
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <p className="text-gray-700">
-                        <span className="font-semibold">Email:</span>{" "}
-                        {admission.email}
+                    {/* Student Info */}
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-800 mb-2">
+                        {admission.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-4">
+                        Applied on: {appliedDate}
                       </p>
-                      <p className="text-gray-700">
-                        <span className="font-semibold">Phone:</span>{" "}
-                        {admission.phone || "N/A"}
-                      </p>
-                      <p className="text-gray-700">
-                        <span className="font-semibold">Course:</span>{" "}
-                        {admission.course}
-                      </p>
-                      <p className="text-gray-700">
-                        <span className="font-semibold">Qualification:</span>{" "}
-                        {admission.qualification || "N/A"}
-                      </p>
-                      <p className="text-gray-700">
-                        <span className="font-semibold">DOB:</span>{" "}
-                        {admission.dob || "N/A"}
-                      </p>
-                      <p className="text-gray-700">
-                        <span className="font-semibold">Gender:</span>{" "}
-                        {admission.gender || "N/A"}
-                      </p>
-                      <p className="text-gray-700 col-span-2">
-                        <span className="font-semibold">Address:</span>{" "}
-                        {admission.address || "N/A"}
-                      </p>
-                      {admission.message && (
-                        <p className="text-gray-700 col-span-2">
-                          <span className="font-semibold">Message:</span>{" "}
-                          {admission.message}
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <p className="text-gray-700">
+                          <span className="font-semibold">Email:</span>{" "}
+                          {admission.email}
                         </p>
-                      )}
+                        <p className="text-gray-700">
+                          <span className="font-semibold">Phone:</span>{" "}
+                          {admission.phone || "N/A"}
+                        </p>
+                        <p className="text-gray-700">
+                          <span className="font-semibold">Course:</span>{" "}
+                          {admission.course}
+                        </p>
+                        <p className="text-gray-700">
+                          <span className="font-semibold">Qualification:</span>{" "}
+                          {admission.qualification || "N/A"}
+                        </p>
+                        <p className="text-gray-700">
+                          <span className="font-semibold">DOB:</span>{" "}
+                          {admission.dob || "N/A"}
+                        </p>
+                        <p className="text-gray-700">
+                          <span className="font-semibold">Gender:</span>{" "}
+                          {admission.gender || "N/A"}
+                        </p>
+                        <p className="text-gray-700 col-span-2">
+                          <span className="font-semibold">Address:</span>{" "}
+                          {admission.address || "N/A"}
+                        </p>
+                        {admission.message && (
+                          <p className="text-gray-700 col-span-2">
+                            <span className="font-semibold">Message:</span>{" "}
+                            {admission.message}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
