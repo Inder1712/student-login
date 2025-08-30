@@ -84,6 +84,61 @@ export default function AdmissionsListPage() {
     });
   }, [admissions, selectedCourse, selectedInstitute, selectedSession]);
 
+  // Print Function
+  const handlePrint = () => {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const htmlContent = `
+      <html>
+        <head>
+          <title>Student List</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h2 { text-align: center; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            th { background: #f4f4f4; }
+            img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
+          </style>
+        </head>
+        <body>
+          <h2>Student List</h2>
+          <table>
+            <thead>
+              <tr>
+                
+                <th>Name</th>
+                <th>Course</th>
+                <th>Institute</th>
+                <th>Session</th>
+                <th>Email</th>
+                <th>Phone</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredAdmissions.map(s => `
+                <tr>
+                
+                  <td>${s.name}</td>
+                  <td>${s.course}</td>
+                  <td>${s.institute || "N/A"}</td>
+                  <td>${s.session || "N/A"}</td>
+                  <td>${s.email}</td>
+                  <td>${s.phone || "N/A"}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   if (checking) return null;
 
   return (
@@ -149,6 +204,16 @@ export default function AdmissionsListPage() {
             </div>
           </div>
         </section>
+
+        {/* Print Button */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 mt-4 flex justify-end">
+          <button
+            onClick={handlePrint}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+          >
+            Print List
+          </button>
+        </div>
 
         {/* Table Section */}
         <section className="max-w-6xl mx-auto py-8 px-4 sm:px-6">

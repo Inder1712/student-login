@@ -37,6 +37,12 @@ const Header = () => {
           >
             Students
           </Link>
+                    <Link
+            href="/Courses"
+            className="text-lg px-4 py-2 rounded-full bg-[#f0f0f0] text-[#222c44] text-center hover:bg-[#e0e0e0] transition-colors duration-300"
+          >
+            Courses
+          </Link>
           <Link
             href="/Notifications"
             className="text-lg px-4 py-2 rounded-full bg-[#f0f0f0] text-[#222c44] text-center hover:bg-[#e0e0e0] transition-colors duration-300"
