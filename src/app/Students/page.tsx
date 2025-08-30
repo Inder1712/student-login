@@ -271,59 +271,93 @@ export default function AdmissionsListPage() {
         </section>
 
         {/* Popup Modal */}
-        {selectedStudent && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-2">
-            <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 max-w-3xl w-full relative overflow-y-auto max-h-[90vh]">
-              <button
-                onClick={() => setSelectedStudent(null)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
-              >
-                ✕
-              </button>
+{selectedStudent && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-2">
+    <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6 md:p-8 
+                    w-full max-w-lg sm:max-w-2xl lg:max-w-4xl 
+                    relative overflow-y-auto max-h-[90vh]">
+      {/* Close Button */}
+      <button
+        onClick={() => setSelectedStudent(null)}
+        className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
+      >
+        ✕
+      </button>
 
-              <h2 className="text-xl sm:text-2xl font-bold mb-4">Student Details</h2>
+      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 text-center sm:text-left">
+        Student Details
+      </h2>
 
-              {/* Student Info */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-gray-700 mb-6 text-sm sm:text-base">
-                <p><span className="font-semibold">Name:</span> {selectedStudent.name}</p>
-                <p><span className="font-semibold">Email:</span> {selectedStudent.email}</p>
-                <p><span className="font-semibold">Phone:</span> {selectedStudent.phone || "N/A"}</p>
-                <p><span className="font-semibold">Course:</span> {selectedStudent.course}</p>
-                <p><span className="font-semibold">Institute:</span> {selectedStudent.institute || "N/A"}</p>
-                <p><span className="font-semibold">Session:</span> {selectedStudent.session || "N/A"}</p>
-                <p><span className="font-semibold">Qualification:</span> {selectedStudent.qualification || "N/A"}</p>
-                <p><span className="font-semibold">DOB:</span> {selectedStudent.dob || "N/A"}</p>
-                <p><span className="font-semibold">Gender:</span> {selectedStudent.gender || "N/A"}</p>
-                <p className="col-span-2"><span className="font-semibold">Address:</span> {selectedStudent.address || "N/A"}</p>
-                {selectedStudent.message && (
-                  <p className="col-span-2"><span className="font-semibold">Message:</span> {selectedStudent.message}</p>
-                )}
-              </div>
+      {/* Student Info */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-gray-700 mb-6 text-sm sm:text-base">
+        <p><span className="font-semibold">Name:</span> {selectedStudent.name}</p>
+        <p><span className="font-semibold">Email:</span> {selectedStudent.email}</p>
+        <p><span className="font-semibold">Phone:</span> {selectedStudent.phone || "N/A"}</p>
+        <p><span className="font-semibold">Course:</span> {selectedStudent.course}</p>
+        <p><span className="font-semibold">Institute:</span> {selectedStudent.institute || "N/A"}</p>
+        <p><span className="font-semibold">Session:</span> {selectedStudent.session || "N/A"}</p>
+        <p><span className="font-semibold">Qualification:</span> {selectedStudent.qualification || "N/A"}</p>
+        <p><span className="font-semibold">DOB:</span> {selectedStudent.dob || "N/A"}</p>
+        <p><span className="font-semibold">Gender:</span> {selectedStudent.gender || "N/A"}</p>
+        <p className="col-span-2"><span className="font-semibold">Address:</span> {selectedStudent.address || "N/A"}</p>
+        {selectedStudent.message && (
+          <p className="col-span-2"><span className="font-semibold">Message:</span> {selectedStudent.message}</p>
+        )}
+      </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-end gap-3 sm:gap-4">
-                <button
-                  onClick={async () => {
-                    if (confirm("Are you sure you want to delete this application?")) {
-                      try {
-                        await deleteDoc(doc(db, "Admissions", selectedStudent.id));
-                        setAdmissions((prev) => prev.filter((s) => s.id !== selectedStudent.id));
-                        setSelectedStudent(null);
-                        alert("Application deleted successfully!");
-                      } catch (error) {
-                        console.error("Error deleting application:", error);
-                        alert("Failed to delete application.");
-                      }
-                    }
-                  }}
-                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
+      {/* Student Images */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        {selectedStudent.photo && (
+          <div className="flex flex-col items-center">
+            <img src={selectedStudent.photo} alt="Profile"
+              className="w-full max-w-xs h-48 object-contain rounded-lg border mb-2" />
+            <a href={selectedStudent.photo} download="profile_photo.jpg"
+              className="text-blue-600 text-sm underline">Download</a>
           </div>
         )}
+        {selectedStudent.aadhar && (
+          <div className="flex flex-col items-center">
+            <img src={selectedStudent.aadhar} alt="Aadhar"
+              className="w-full max-w-xs h-48 object-contain rounded-lg border mb-2" />
+            <a href={selectedStudent.aadhar} download="aadhar.jpg"
+              className="text-blue-600 text-sm underline">Download</a>
+          </div>
+        )}
+        {selectedStudent.qualificationDoc && (
+          <div className="flex flex-col items-center">
+            <img src={selectedStudent.qualificationDoc} alt="Qualification Document"
+              className="w-full max-w-xs h-48 object-contain rounded-lg border mb-2" />
+            <a href={selectedStudent.qualificationDoc} download="qualification_doc.jpg"
+              className="text-blue-600 text-sm underline">Download</a>
+          </div>
+        )}
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-end gap-3 sm:gap-4">
+        <button
+          onClick={async () => {
+            if (confirm("Are you sure you want to delete this application?")) {
+              try {
+                await deleteDoc(doc(db, "Admissions", selectedStudent.id));
+                setAdmissions((prev) => prev.filter((s) => s.id !== selectedStudent.id));
+                setSelectedStudent(null);
+                alert("Application deleted successfully!");
+              } catch (error) {
+                console.error("Error deleting application:", error);
+                alert("Failed to delete application.");
+              }
+            }
+          }}
+          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+        
       </div>
     </AdminLayout>
   );

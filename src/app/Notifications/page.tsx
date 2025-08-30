@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 
 import AdminLayout from "../components/AdminLayout";
+import imageCompression from "browser-image-compression";
 
 type Notification = {
   id?: string;
@@ -35,6 +36,16 @@ async function fileToBase64(file: File): Promise<string> {
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = (err) => reject(err);
   });
+}
+
+// compress + convert to base64
+async function compressAndConvert(file: File): Promise<string> {
+  const compressedFile = await imageCompression(file, {
+    maxSizeMB: 0.2, // 200KB max
+    maxWidthOrHeight: 800, // resize if needed
+    useWebWorker: true,
+  });
+  return await fileToBase64(compressedFile);
 }
 
 export default function NotificationsPage() {
@@ -165,8 +176,8 @@ export default function NotificationsPage() {
                   className="hidden"
                   onChange={async (e) => {
                     if (e.target.files && e.target.files[0]) {
-                      const base64 = await fileToBase64(e.target.files[0]);
-                      setNewNotification({ ...newNotification, image: base64 });
+                      const compressedBase64 = await compressAndConvert(e.target.files[0]);
+                      setNewNotification({ ...newNotification, image: compressedBase64 });
                     }
                   }}
                 />
@@ -226,27 +237,27 @@ export default function NotificationsPage() {
                         placeholder="Link"
                       />
                       <label className="flex flex-col items-center justify-center w-40 h-40 border-2 border-dashed border-gray-400 rounded-lg cursor-pointer hover:bg-gray-100">
-  {editData.image ? (
-    <img
-      src={editData.image}
-      alt="preview"
-      className="w-32 h-32 object-cover"
-    />
-  ) : (
-    <span className="text-gray-500">Click to upload</span> // your placeholder
-  )}
-  <input
-    type="file"
-    accept="image/*"
-    className="hidden "
-    onChange={async (e) => {
-      if (e.target.files && e.target.files[0]) {
-        const base64 = await fileToBase64(e.target.files[0]);
-        setEditData({ ...editData, image: base64 });
-      }
-    }}
-  /> 
-</label>
+                        {editData.image ? (
+                          <img
+                            src={editData.image}
+                            alt="preview"
+                            className="w-32 h-32 object-cover"
+                          />
+                        ) : (
+                          <span className="text-gray-500">Click to upload</span>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden "
+                          onChange={async (e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              const compressedBase64 = await compressAndConvert(e.target.files[0]);
+                              setEditData({ ...editData, image: compressedBase64 });
+                            }
+                          }}
+                        />
+                      </label>
                       <div className="flex gap-2 mt-2">
                         <button
                           onClick={saveEdit}
