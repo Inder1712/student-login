@@ -9,6 +9,11 @@ import AdminLayout from "../components/AdminLayout";
 interface Admission {
   id: string;
   name: string;
+
+  relation?: string;        // NEW
+  guardianName?: string;    // NEW
+  admissionDate?: string;   // NEW
+
   email: string;
   course: string;
   institute?: string;
@@ -289,21 +294,82 @@ export default function AdmissionsListPage() {
       </h2>
 
       {/* Student Info */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-gray-700 mb-6 text-sm sm:text-base">
-        <p><span className="font-semibold">Name:</span> {selectedStudent.name}</p>
-        <p><span className="font-semibold">Email:</span> {selectedStudent.email}</p>
-        <p><span className="font-semibold">Phone:</span> {selectedStudent.phone || "N/A"}</p>
-        <p><span className="font-semibold">Course:</span> {selectedStudent.course}</p>
-        <p><span className="font-semibold">Institute:</span> {selectedStudent.institute || "N/A"}</p>
-        <p><span className="font-semibold">Session:</span> {selectedStudent.session || "N/A"}</p>
-        <p><span className="font-semibold">Qualification:</span> {selectedStudent.qualification || "N/A"}</p>
-        <p><span className="font-semibold">DOB:</span> {selectedStudent.dob || "N/A"}</p>
-        <p><span className="font-semibold">Gender:</span> {selectedStudent.gender || "N/A"}</p>
-        <p className="col-span-2"><span className="font-semibold">Address:</span> {selectedStudent.address || "N/A"}</p>
-        {selectedStudent.message && (
-          <p className="col-span-2"><span className="font-semibold">Message:</span> {selectedStudent.message}</p>
-        )}
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-gray-700 mb-6 text-sm sm:text-base">
+
+  <p>
+    <span className="font-semibold">Name:</span>{" "}
+    {selectedStudent.name}
+  </p>
+
+  <p>
+    <span className="font-semibold">Admission Date:</span>{" "}
+    {selectedStudent.admissionDate || "N/A"}
+  </p>
+
+  <p>
+    <span className="font-semibold">Relation:</span>{" "}
+    {selectedStudent.relation || "N/A"}
+  </p>
+
+  <p>
+    <span className="font-semibold">
+      Father's / Husband's Name:
+    </span>{" "}
+    {selectedStudent.guardianName || "N/A"}
+  </p>
+
+  <p>
+    <span className="font-semibold">Email:</span>{" "}
+    {selectedStudent.email}
+  </p>
+
+  <p>
+    <span className="font-semibold">Phone:</span>{" "}
+    {selectedStudent.phone || "N/A"}
+  </p>
+
+  <p>
+    <span className="font-semibold">Course:</span>{" "}
+    {selectedStudent.course}
+  </p>
+
+  <p>
+    <span className="font-semibold">Institute:</span>{" "}
+    {selectedStudent.institute || "N/A"}
+  </p>
+
+  <p>
+    <span className="font-semibold">Session:</span>{" "}
+    {selectedStudent.session || "N/A"}
+  </p>
+
+  <p>
+    <span className="font-semibold">Qualification:</span>{" "}
+    {selectedStudent.qualification || "N/A"}
+  </p>
+
+  <p>
+    <span className="font-semibold">DOB:</span>{" "}
+    {selectedStudent.dob || "N/A"}
+  </p>
+
+  <p>
+    <span className="font-semibold">Gender:</span>{" "}
+    {selectedStudent.gender || "N/A"}
+  </p>
+
+  <p className="col-span-2">
+    <span className="font-semibold">Address:</span>{" "}
+    {selectedStudent.address || "N/A"}
+  </p>
+
+  {selectedStudent.message && (
+    <p className="col-span-2">
+      <span className="font-semibold">Message:</span>{" "}
+      {selectedStudent.message}
+    </p>
+  )}
+</div>
 
       {/* Student Images */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
